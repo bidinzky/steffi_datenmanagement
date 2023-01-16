@@ -30,6 +30,19 @@ Referenz: UTB3_Datenanken_02_Ueberblick
 1. Datenbank (DB): geordnete, selbstbeschreibende Sammlung von Daten, die in Beziehung stehen.
 2. Datenbanksystem (DBS): DB + Datenbank Managemensystem (DBMS) + Kommunikationsschnittstelle.
 
+
+
+| Tabelle | Relationale Datenbank| Entity-RelationshipModell (ERM)  | Unified  Modeling Language (UML) |
+| -------- | -------- | -------- | ---- |
+| Wertebereich (Domäne, Domain)   | --""--  |  --""--    | --""-- |
+| Kopfzeile | Relationstyp Relationsformat Relationsschema | Entitätstyp | Klasse | 
+| Spaltenüberschrift | Attribut | Attribut | Attribut |
+| Inhalt | Relation | Entitätsmenge | Objektmenge Instanzmenge |
+| -- | Fremdschlüsselbeziehung | Beziehung | ASsoziation |
+| Zeile | Tuple | Entität | Objekt, Instanz |
+| Zeile | Attributswert | Attributswert | Attributswert |
+
+
 ---
 
 ## "Arten" von Datenbanken
@@ -124,146 +137,164 @@ Entity-Relationship-Modelle nicht standardisiert --> zum Teil in gleicher Firma 
 
 ---
 
-## Who am I?
+## sematische Modellierung vorgehen 2
 
-- Front-end developer
-- VSCode :heart: 
-- I use tabs. :cat: 
-
----
-
-### 70% of our users are developers. Developers :heart: GitHub.
+* zwei Betrachtungsebenen
+    * einzelne Objekte (Exemplar)
+    * Gruppe von Objekten (Typen, Klassen)
+* Entity Typen sind eine Sammlung von Entties mit den selben Attributen
+* Alle Entities eines Types haben zwar die gleichen Attribute aber besitzen ihre eigene Werte (z.B. Alter)
 
 ---
 
-{%youtube E8Nj7RwXf0s %}
+## sematische Modellierung vorgehen 3
+
+![](https://i.imgur.com/Jn4B4Zy.png)
 
 ---
 
-### Usage flow
+## sematische Modellierung vorgehen 4
+
+![](https://i.imgur.com/2SirHIQ.png)
 
 ---
 
+## ER-Modellierung
 
-```graphviz
-digraph {
-  compound=true
-  rankdir=RL
-
-  graph [ fontname="Source Sans Pro", fontsize=20 ];
-  node [ fontname="Source Sans Pro", fontsize=18];
-  edge [ fontname="Source Sans Pro", fontsize=12 ];
-
-
-  subgraph core {
-    c [label="Hackmd-it \ncore"] [shape=box]
-  }
-  
-  c -> sync [ltail=session lhead=session]
-
-  subgraph cluster1 {
-     concentrate=true
-    a [label="Text source\nGithub, Gitlab, ..."] [shape=box]
-    b [label="HackMD Editor"] [shape=box]
-    sync [label="sync" shape=plaintext ]
-    b -> sync  [dir="both"]
-    sync -> a [dir="both"]
-    label="An edit session"
-  }
-}
-```
+* Entity Typen werden zu Tabellen
+* Entities werden zu Zeilen (bzw. deren Werte werden zeilenweise eingetragen)
 
 ---
 
-### Architecture of extension
+## ER-Modellierung 2
+
+![](https://i.imgur.com/4m8bGPs.png)
+
+---
+## ER-Modellierung 3
+
+1. ![](https://i.imgur.com/hx1qKRJ.png) sind Entities (Objekte)
+2. ![](https://i.imgur.com/fV17i4W.png) sind Relationen (Beziehungstypen)
+3. ![](https://i.imgur.com/xkSLVd3.png) sind Attribute (Eigenschaften)
+4. ![](https://i.imgur.com/r6Ez9G7.png =60%x100%) sind Kardinalitäten (Beziehungen)
+5. ![](https://i.imgur.com/44LFzox.png =60%x100%) Generalisierung / Spezialisierung 
 
 ---
 
-![](https://i.imgur.com/ij69tPh.png)
+## ER-Modellierung 4 / Kardinalitäten
+
+1. Chen: Wieviele Objekte sind einem Objekt höchstens zugeordnet
+![](https://i.imgur.com/HLHY5Qz.png)
+Eine Bestellung entöhlt viele (n) Bestellposten.<br>
+Ein Bestellposten ist einer Bestellung zugeordnet.
+    1. 1:1 => Ein Objekt is einem anderem zugeordnet
+    2. 1:n => Mehrere Objekte sind einem Objekt zugeordnet
+    4. n:1 => Ein Objekt ist mehreren Objekten zugeordnet
+    5. n:m => Mehrere Objekte sind mehreren Objeketen zugeordnet
+2.  Schlageter-Stucky: Mit wieviel Objeketen  steht ein Objekt in Beziehung
+![](https://i.imgur.com/rFVURs2.png)
+Ähnlich wie Chen nur Leserichtung "umgedreht"<br>
+Erlaubt Auflösung von komplexeren Beziehungen
+    | Kürzel | Bedeutung | Beispiel |
+    | -------- | -------- | -------- |
+    | k     | k-mal     | 5     |
+    | [n,m] | mindesten n, maximal m | [2,6] |
+    | * | 0 oder mehr | 8 |
+    | + | 1 oder mehr | 1 |
+    | c | 0 oder 1 | 0 |
+
+3. ISO: Mit wie vielen OBjekten steht ein Objekt minmal und maximal in Beziehung
+![](https://i.imgur.com/4ja8ziE.png)
+4. Modified-Chen (MC): wie Chen nur mit extras :smiley:
+    1. c => 0 oder 1
+    2. m => mulitple
+
+    Der unterschied ist, dass 1 in MC bedeutet mindestens 1<br>
+    | Chen | Modified-Chen |
+    | --- | --- |
+    | 1:1 | c:c |
+    | 1:N | c:mc|
+    | 1:N + total participation| 1:mc|
+    | M:N | mc:mc|
+    | total part. + 1:1 | c:1|
+    | total part. + 1:1 + total part.| 1:1|
+    |total part. 1:N + total part. | 1:m|
+    |total part. + M:N | mc:m |
+    |total part. + M:N + total part.| m:m|
+5. Chen mit Min-Max Kennzeichnung (für Vorlesung)
+Mischung aus Chen und ISO + '0' für keins oder mehrere und '1' für eins oder mehr
+ ![](https://i.imgur.com/aqs5FSh.png)
+Eine Bestellung enthält mehrere Bestellposten (1:n) und ein Bestellposten ist in einer Bestellung enthalten (1:1). Eine Bestellung enthält mindestens 1 Bestellposten und ein Bestellposten ohne Bestellung gibt es auch nicht!
+![](https://i.imgur.com/63zFqOW.png)
+Ein Student kann Bücher ausleihen muss aber nicht (0:n) und ein Buch kann von einem Studenten ausgeliehen sein muss aber nicht (0:1).
+6. Crow's Foot / Martin Notation: grafische Darstellung einer Notation
+![](https://i.imgur.com/d7WtM2S.png =50%x)
+
 
 ---
 
-## Content script
+## Unified Modeling Language (UML)
 
-- Bind with each page
-- Manipulate DOM
-- Add event listeners
-- Isolated JavaScript environment
-  - It doesn't break things
+Standardisierte Diagramme um Kommunikation zu vereinfachen.
+![](https://i.imgur.com/HHG9Hr3.png)
 
 ---
 
-# :fork_and_knife: 
+# Datenbankschema
+
+Beschreibt die Struktur und Art der Daten einer Datenbank.
+
+1. Welche Tabellen gibt?
+2. Für jede Tabelle: Welche Spalten gibt es?
+3. Für jede Spalte:
+    4. Welcher Datentyp?
+    5. Nullable?
+    6. Defaultwert?
+    7. Constraints (Einschrenkung des Wertebereichs)
+5. Primärschlüssel?
+6. Fremdschlüssel?
+7. Indizes?
 
 ---
 
-<style>
-code.blue {
-  color: #337AB7 !important;
-}
-code.orange {
-  color: #F7A004 !important;
-}
-</style>
+## Architektur eines DBMS
 
-- <code class="orange">onMessage('event')</code>: Register event listener
-- <code class="blue">sendMessage('event')</code>: Trigger event
+![](https://i.imgur.com/F6DyINy.png)
 
 ---
 
-# :bulb: 
+## Architektur eines DBMS - Einschichtig
+
+* Alles auf einem PC (z.B. SqlLite)
+* Im Unternhemensumfeld oft nicht sinnvoll (z.B. wegen Wartung, Skalierbarkeit, ...)
+![](https://i.imgur.com/rUuGJNc.png)
+
+---
+## Architektur eines DBMS - Zweischichtig
+
+Unterscheidung zwischen Intelegentem Server oder Client
+### Intelligenter Client
+
+![](https://i.imgur.com/sBPRAWL.png)
+
+* Daten müssen nur einmal Übertragen werden, Bearbeitung kann selbständig erfolgen
+* Client benötigt entsprechende Resourcen (Rechenleistung) um komplexe Verbeitungen durchzuführen
+
+
+### Intelligenter Server
+
+![](https://i.imgur.com/0eqXnVr.png)
+
+* Clients benötigen nicht viel Rechenleistungs selbst für komplexe Verarbeitungen
+* Server muss basierend auf den Usern Skaliert sein (oft Engpass)
+
+### Hybride Lösung
+
+Server und Client teilen sich die Verarbeitung basierend auf den Anforderungen <br> so können rechenintensive Auswertungen z.B. Täglich in der Nacht auf dem Server durchgeführt und dann gecached dem Client übergeben werden <br> kleiner Auswertungen aber direkt vom Client beim Verwenden erstellt werden+
 
 ---
 
-- Dead simple API
-- Only cares about application logic
+## Architektur eines DBMS - n-schichtig
 
----
-
-```typescript
-import * as Channeru from 'channeru'
-
-// setup channel in different page environment, once
-const channel = Channeru.create()
-```
-
----
-
-```typescript
-// in background script
-const fakeLogin = async () => true
-
-channel.answer('isLogin', async () => {
-  return await fakeLogin()
-})
-```
-
-<br>
-
-```typescript
-// in inject script
-const isLogin = await channel.callBackground('isLogin')
-console.log(isLogin) //-> true
-```
-
----
-
-# :100: :muscle: :tada:
-
----
-
-### Wrap up
-
-- Cross envornment commnication
-- A small library to solve messaging pain
-- TypeScript Rocks :tada: 
-
----
-
-### Thank you! :sheep: 
-
-You can find me on
-
-- GitHub
-- Twitter
-- or email me
+Auftrennung der Layer zum teil mit extra Redundanz.
+![](https://i.imgur.com/ecCyfE1.png)
